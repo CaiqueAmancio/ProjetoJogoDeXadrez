@@ -8,36 +8,62 @@ namespace xadrez_console
     {
         public static void imprimirTabuleiro(Tabuleiro tab)
         {
-            for (int i=0; i<tab.linhas; i++)
+            for (int i = 0; i < tab.linhas; i++)
             {
                 Console.Write(8 - i + " ");
-                for(int j=0; j<tab.colunas; j++)
+                for (int j = 0; j < tab.colunas; j++)
                 {
-                    if (tab.peca(i, j) == null)
+                    imprimirPeca(tab.peca(i, j)); // imprimir a peca
+                }
+            Console.WriteLine();
+        }
+            Console.WriteLine("  a b c d e f g h");
+        }
+
+        public static void imprimirTabuleiro(Tabuleiro tab, bool[,] posicoesPossiveis)
+        {
+            ConsoleColor fundoOriginal = Console.BackgroundColor; // pegar a cor do fundo
+            ConsoleColor fundoAlterado = ConsoleColor.DarkGray; // cor cinza escuro quando a posicao estiver marcada
+
+            for (int i = 0; i < tab.linhas; i++)
+            {
+                Console.Write(8 - i + " ");
+                for (int j = 0; j < tab.colunas; j++)
+                {
+                    if(posicoesPossiveis[i, j])
                     {
-                        Console.Write("- ");
+                        Console.BackgroundColor = fundoAlterado;
                     }
                     else
                     {
-                        imprimirPeca(tab.peca(i, j)); // imprimir a peca
-                        Console.Write(" "); // imprimir espaco em branco
+                        Console.BackgroundColor = fundoOriginal;
                     }
+                    imprimirPeca(tab.peca(i, j)); // imprimir a peca
+                    Console.BackgroundColor = fundoOriginal;
                 }
                 Console.WriteLine();
             }
             Console.WriteLine("  a b c d e f g h");
+            Console.BackgroundColor = fundoOriginal;
         }
 
         public static PosicaoXadrez lerPosicaoXadrez() // ler do teclado o que o usuario digitar
-        {
-            string s = Console.ReadLine();
-            char coluna = s[0];
-            int linha = int.Parse(s[1] + "");
-            return new PosicaoXadrez(coluna, linha);
-        }
+    {
+        string s = Console.ReadLine();
+        char coluna = s[0];
+        int linha = int.Parse(s[1] + "");
+        return new PosicaoXadrez(coluna, linha);
+    }
 
-        public static void imprimirPeca(Peca peca)
+    public static void imprimirPeca(Peca peca)
+    {
+        if (peca == null)
         {
+            Console.Write("- ");
+        }
+        else
+        {
+
             if (peca.cor == Cor.Branca)
             {
                 Console.Write(peca);
@@ -49,6 +75,8 @@ namespace xadrez_console
                 Console.Write(peca); // imprime a cor
                 Console.ForegroundColor = aux; // volta para a cor original
             }
+            Console.Write(" ");
         }
     }
+}
 }

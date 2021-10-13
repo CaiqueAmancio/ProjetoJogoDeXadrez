@@ -42,8 +42,11 @@ namespace xadrez_console
                         Console.ReadLine();
                     }
                 }
-
+                Console.Clear();
                 Tela.imprimirTabuleiro(partida.tab);
+                Console.WriteLine();
+                Console.WriteLine("XEQUE-MATE!");
+                Console.WriteLine("Vencedor: " + partida.jogadorAtual);
             }
             catch (TabuleiroException e)
             {

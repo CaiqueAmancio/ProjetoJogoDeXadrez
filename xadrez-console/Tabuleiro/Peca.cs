@@ -41,7 +41,7 @@ namespace tabuleiro
             return false; // ira retornar o movimento se a peca puder se mover no tabuleiro (linha, coluna)
         }
 
-        public bool podeMoverPara(Posicao pos) // verifica se a peça pode se mover para uma posicao determinada
+        public bool movimentoPossivel(Posicao pos) // verifica se a peça pode se mover para uma posicao determinada
         {
             return movimentosPossiveis()[pos.linha, pos.coluna]; // testar se na linha e na coluna essa posicao e verdadeira
         }

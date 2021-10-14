@@ -35,6 +35,7 @@ namespace xadrez_console
                         partida.validarPosicaoDeDestino(origem, destino);
 
                         partida.realizaJogada(origem, destino);
+
                     }
                     catch(TabuleiroException e)
                     {

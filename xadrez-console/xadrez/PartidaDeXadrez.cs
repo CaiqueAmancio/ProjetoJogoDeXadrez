@@ -34,13 +34,13 @@ namespace xadrez
             p.incrementarQtdeMovimentos(); // incrementar movimentos
             Peca pecaCapturada = tab.retirarPeca(destino); // captura e retira a peca, caso tenha no indice
             tab.colocarPeca(p, destino); // coloca peca na posicao de destino
-            if(pecaCapturada != null) // testar se tinha uma peca na posicao de destino
+            if (pecaCapturada != null) // testar se tinha uma peca na posicao de destino
             {
                 capturadas.Add(pecaCapturada); // insere essa peca no conjunto das pecas capturadas 
             }
 
             // #Jogadaespecial roque pequeno
-            if(p is Rei && destino.coluna == origem.coluna + 2) //se a peca e rei e se o destino da coluna for igual a origem na coluna
+            if (p is Rei && destino.coluna == origem.coluna + 2) //se a peca e rei e se o destino da coluna for igual a origem na coluna
             {
                 Posicao origemT = new Posicao(origem.linha, origem.coluna + 3);
                 Posicao destinoT = new Posicao(origem.linha, origem.coluna + 1);
@@ -50,7 +50,7 @@ namespace xadrez
             }
 
             // #Jogadaespecial roque grande
-            if (p is Rei && destino.coluna == origem.coluna - 2) 
+            if (p is Rei && destino.coluna == origem.coluna - 2)
             {
                 Posicao origemT = new Posicao(origem.linha, origem.coluna - 4);
                 Posicao destinoT = new Posicao(origem.linha, origem.coluna - 1);
@@ -60,12 +60,12 @@ namespace xadrez
             }
 
             // #Jogadaespecial En Passant
-            if(p is Peao) // se a peca p for um Peao
+            if (p is Peao) // se a peca p for um Peao
             {
-                if(origem.coluna != destino.coluna && pecaCapturada == null) // se mexeu na diagonal e a mecanica geral de peca capturada nao for usada, foi realizado o en passant
+                if (origem.coluna != destino.coluna && pecaCapturada == null) // se mexeu na diagonal e a mecanica geral de peca capturada nao for usada, foi realizado o en passant
                 {
                     Posicao posP; // posicao do peao
-                    if(p.cor == Cor.Branca)
+                    if (p.cor == Cor.Branca)
                     {
                         posP = new Posicao(destino.linha + 1, destino.coluna); // logica para capturar o peao Preto
                     }
@@ -80,12 +80,13 @@ namespace xadrez
 
             return pecaCapturada;
         }
+        
 
         public void desfazMovimento(Posicao origem, Posicao destino, Peca pecaCapturada)
         {
             Peca p = tab.retirarPeca(destino);
             p.decrementarQtdeMovimentos();
-            if(pecaCapturada != null) // se houve uma peca capturada 
+            if (pecaCapturada != null) // se houve uma peca capturada 
             {
                 tab.colocarPeca(pecaCapturada, destino);
                 capturadas.Remove(pecaCapturada);
@@ -113,9 +114,9 @@ namespace xadrez
             }
 
             // #Jogadaespecial En Passant
-            if(p is Peao)
+            if (p is Peao)
             {
-                if(origem.coluna != destino.coluna && pecaCapturada == vulneravelEnPassant)
+                if (origem.coluna != destino.coluna && pecaCapturada == vulneravelEnPassant)
                 {
                     Peca peao = tab.retirarPeca(destino);
                     Posicao posP;
@@ -141,6 +142,20 @@ namespace xadrez
                 desfazMovimento(origem, destino, pecaCapturada);
                 throw new TabuleiroException("Você não pode se colocar em xeque!");
             }
+            Peca p = tab.peca(destino); // qual peca foi movida
+
+            // #Jogadaespeical Promocao
+            if(p is Peao)
+            {
+                if((p.cor == Cor.Branca && destino.linha == 0) || (p.cor == Cor.Preta && destino.linha == 7)) // testa se o peao branco ou o peao das pretas chegarem no limite de linhas respectivas
+                {
+                    p = tab.retirarPeca(destino); // retira a peca
+                    pecas.Remove(p); // remove a peca do tabuleiro
+                    Peca dama = new Dama(tab, p.cor); // instancia uma nova dama, automaticamente
+                    tab.colocarPeca(dama, destino); // coloca a peca na posicao de destino
+                    pecas.Add(dama); // adciona a dama ao tabuleiro
+                }
+            }
 
             if (estaEmXeque(adversaria(jogadorAtual))) // se o adversario estiver em xeque
             {
@@ -161,10 +176,8 @@ namespace xadrez
                 mudaJogador();
             }
 
-            Peca p = tab.peca(destino); // qual peca foi movida
-
             // #Jogadaespecial En Passant
-            if(p is Peao && (destino.linha == origem.linha -2 || destino.linha == origem.linha + 2)) //testando se a peca que foi movida e um peao e ela andou 2 linhas a mais ou a menos
+            if (p is Peao && (destino.linha == origem.linha - 2 || destino.linha == origem.linha + 2)) //testando se a peca que foi movida e um peao e ela andou 2 linhas a mais ou a menos
             {
                 vulneravelEnPassant = p; // essa peca esta vuneravel a tomar um en passant no segundo turno
             }
@@ -177,11 +190,11 @@ namespace xadrez
 
         public void validarPosicaoDeOrigem(Posicao pos) // verificar se na origem existe peca para movimentar
         {
-            if(tab.peca(pos) == null) // significa que não tem peca nessa posicao
+            if (tab.peca(pos) == null) // significa que não tem peca nessa posicao
             {
                 throw new TabuleiroException("Não existe peça na posição de origem escolhida!");
             }
-            if(jogadorAtual != tab.peca(pos).cor) // verificar se a peca e da cor do jogador atual
+            if (jogadorAtual != tab.peca(pos).cor) // verificar se a peca e da cor do jogador atual
             {
                 throw new TabuleiroException("A peça de origem escolhida não é sua!");
             }
@@ -201,7 +214,7 @@ namespace xadrez
 
         private void mudaJogador()
         {
-            if(jogadorAtual == Cor.Branca)
+            if (jogadorAtual == Cor.Branca)
             {
                 jogadorAtual = Cor.Preta;
             }
@@ -214,9 +227,9 @@ namespace xadrez
         public HashSet<Peca> pecasCapturadas(Cor cor) // metodo para informar quais as pecas capturadas brancas
         {
             HashSet<Peca> aux = new HashSet<Peca>();
-            foreach(Peca x in capturadas) // percorrer todo o conjunto de pecas capturadas 
+            foreach (Peca x in capturadas) // percorrer todo o conjunto de pecas capturadas 
             {
-                if(x.cor == cor) // se a peca for da cor informada faca
+                if (x.cor == cor) // se a peca for da cor informada faca
                 {
                     aux.Add(x); // adcionar a peca no conjunto aux
                 }
@@ -240,7 +253,7 @@ namespace xadrez
 
         private Cor adversaria(Cor cor) // metodo para descobrir quem e o adversario de uma cor dada pelo usuario
         {
-            if(cor == Cor.Branca)
+            if (cor == Cor.Branca)
             {
                 return Cor.Preta;
             }
@@ -252,7 +265,8 @@ namespace xadrez
 
         private Peca rei(Cor cor) // devolver o rei de uma dada cor
         {
-            foreach(Peca x in pecasEmJogo(cor)){
+            foreach (Peca x in pecasEmJogo(cor))
+            {
                 if (x is Rei) // se o x for uma instancia de Rei
                 {
                     return x; // retornar o Rei daquela cor, se for true
@@ -269,7 +283,7 @@ namespace xadrez
                 throw new TabuleiroException("Não tem Rei da cor " + cor + " no tabuleiro!");
             }
 
-            foreach(Peca x in pecasEmJogo(adversaria(cor))) // para cada peca em jogo da cor adversaria
+            foreach (Peca x in pecasEmJogo(adversaria(cor))) // para cada peca em jogo da cor adversaria
             {
                 bool[,] mat = x.movimentosPossiveis();
                 if (mat[R.posicao.linha, R.posicao.coluna]) // se na posicao onde estiver o rei for verdeira, significa que estou em xeque
@@ -286,14 +300,14 @@ namespace xadrez
             {
                 return false; // nao esta em xequemate
             }
-            foreach(Peca x in pecasEmJogo(cor))
+            foreach (Peca x in pecasEmJogo(cor))
             {
                 bool[,] mat = x.movimentosPossiveis(); // pegar a matriz de movimentos possiveis da peca x
-                for(int i=0; i<tab.linhas; i++)
+                for (int i = 0; i < tab.linhas; i++)
                 {
-                    for(int j=0; j<tab.colunas; j++)
+                    for (int j = 0; j < tab.colunas; j++)
                     {
-                        if(mat[i, j])
+                        if (mat[i, j])
                         {
                             Posicao origem = x.posicao;
                             Posicao destino = new Posicao(i, j);
@@ -352,8 +366,6 @@ namespace xadrez
             colocarNovaPeca('f', 7, new Peao(tab, Cor.Preta, this));
             colocarNovaPeca('g', 7, new Peao(tab, Cor.Preta, this));
             colocarNovaPeca('h', 7, new Peao(tab, Cor.Preta, this));
-
-
 
         }
     }

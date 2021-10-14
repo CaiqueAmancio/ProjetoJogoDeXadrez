@@ -13,6 +13,7 @@ namespace xadrez
         private HashSet<Peca> pecas; // este conjunto ira guardar todas as pecas da partida
         private HashSet<Peca> capturadas; // este conjunto ira guardar todas as pecas capturadas
         public bool xeque { get; private set; }
+        public Peca vulneravelEnPassant { get; private set; } // a partida ira armazenar a peca que for movida tornando-a vuneravel a jogada En passant
 
         public PartidaDeXadrez()
         {
@@ -21,6 +22,7 @@ namespace xadrez
             jogadorAtual = Cor.Branca;
             terminada = false;
             xeque = false;
+            vulneravelEnPassant = null;
             pecas = new HashSet<Peca>();
             capturadas = new HashSet<Peca>();
             colocarPecas();
@@ -57,6 +59,25 @@ namespace xadrez
                 tab.colocarPeca(T, destinoT); // coloca na posicao indicada
             }
 
+            // #Jogadaespecial En Passant
+            if(p is Peao) // se a peca p for um Peao
+            {
+                if(origem.coluna != destino.coluna && pecaCapturada == null) // se mexeu na diagonal e a mecanica geral de peca capturada nao for usada, foi realizado o en passant
+                {
+                    Posicao posP; // posicao do peao
+                    if(p.cor == Cor.Branca)
+                    {
+                        posP = new Posicao(destino.linha + 1, destino.coluna); // logica para capturar o peao Preto
+                    }
+                    else
+                    {
+                        posP = new Posicao(destino.linha - 1, destino.coluna);
+                    }
+                    pecaCapturada = tab.retirarPeca(posP); // guardar a peca capturada 
+                    capturadas.Add(pecaCapturada); // adcionar no conjunto de pecas capturadas
+                }
+            }
+
             return pecaCapturada;
         }
 
@@ -90,6 +111,25 @@ namespace xadrez
                 T.decrementarQtdeMovimentos();
                 tab.colocarPeca(T, origemT); // coloca na posicao indicada
             }
+
+            // #Jogadaespecial En Passant
+            if(p is Peao)
+            {
+                if(origem.coluna != destino.coluna && pecaCapturada == vulneravelEnPassant)
+                {
+                    Peca peao = tab.retirarPeca(destino);
+                    Posicao posP;
+                    if (p.cor == Cor.Branca) // testar se foi um peao branco que mexeu
+                    {
+                        posP = new Posicao(3, destino.coluna); // volta para a posicao original
+                    }
+                    else // caso tenha sido um peao das Pretas
+                    {
+                        posP = new Posicao(4, destino.coluna); // volta para a posicao original
+                    }
+                    tab.colocarPeca(peao, posP);
+                }
+            }
         }
 
         public void realizaJogada(Posicao origem, Posicao destino)
@@ -119,7 +159,20 @@ namespace xadrez
             {
                 turno++;
                 mudaJogador();
-            }   
+            }
+
+            Peca p = tab.peca(destino); // qual peca foi movida
+
+            // #Jogadaespecial En Passant
+            if(p is Peao && (destino.linha == origem.linha -2 || destino.linha == origem.linha + 2)) //testando se a peca que foi movida e um peao e ela andou 2 linhas a mais ou a menos
+            {
+                vulneravelEnPassant = p; // essa peca esta vuneravel a tomar um en passant no segundo turno
+            }
+            else
+            {
+                vulneravelEnPassant = null; // caso contrario, ninguem esta vuneravel para en passant
+            }
+
         }
 
         public void validarPosicaoDeOrigem(Posicao pos) // verificar se na origem existe peca para movimentar

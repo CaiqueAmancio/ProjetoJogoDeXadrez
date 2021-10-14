@@ -59,20 +59,20 @@ namespace xadrez
                     mat[pos.linha, pos.coluna] = true;
                 }
 
-                /* #jogadaespecial en passant
-                if (posicao.linha == 3)
+                // #Jogadaespecial En Passant
+                if (posicao.linha == 3) // unica linha onde o peao branco pode fazer o en passant
                 {
-                    Posicao esquerda = new Posicao(posicao.linha, posicao.coluna - 1);
+                    Posicao esquerda = new Posicao(posicao.linha, posicao.coluna - 1); // posicao onde o peao branco pode fazer o en passant
                     if (tab.posicaoValida(esquerda) && existeInimigo(esquerda) && tab.peca(esquerda) == partida.vulneravelEnPassant)
                     {
-                        mat[esquerda.linha - 1, esquerda.coluna] = true;
+                        mat[esquerda.linha - 1, esquerda.coluna] = true; // marca a posicao da matriz como uma posicao possivel para o peao andar
                     }
-                    Posicao direita = new Posicao(posicao.linha, posicao.coluna + 1);
+                    Posicao direita = new Posicao(posicao.linha, posicao.coluna + 1); // posicao onde o peao branco pode fazer o en passant
                     if (tab.posicaoValida(direita) && existeInimigo(direita) && tab.peca(direita) == partida.vulneravelEnPassant)
                     {
-                        mat[direita.linha - 1, direita.coluna] = true;
+                        mat[direita.linha - 1, direita.coluna] = true; // marca a posicao da matriz como uma posicao possivel para o peao andar
                     }
-                } */
+                } 
             }
             else
             {
@@ -98,22 +98,21 @@ namespace xadrez
                     mat[pos.linha, pos.coluna] = true;
                 }
 
-                /* #jogadaespecial en passant
-                if (posicao.linha == 4)
+                // #jogadaespecial en passant
+                if (posicao.linha == 4) // unica linha pode ocorrer o en passant para o peao das pecas pretas
                 {
-                    Posicao esquerda = new Posicao(posicao.linha, posicao.coluna - 1);
+                    Posicao esquerda = new Posicao(posicao.linha, posicao.coluna - 1); // posicao onde o peao preto pode fazer o en passant
                     if (tab.posicaoValida(esquerda) && existeInimigo(esquerda) && tab.peca(esquerda) == partida.vulneravelEnPassant)
                     {
-                        mat[esquerda.linha + 1, esquerda.coluna] = true;
+                        mat[esquerda.linha + 1, esquerda.coluna] = true; // marca a posicao da matriz como uma posicao possivel para o peao andar
                     }
-                    Posicao direita = new Posicao(posicao.linha, posicao.coluna + 1);
+                    Posicao direita = new Posicao(posicao.linha, posicao.coluna + 1); // posicao onde o peao preto pode fazer o en passant
                     if (tab.posicaoValida(direita) && existeInimigo(direita) && tab.peca(direita) == partida.vulneravelEnPassant)
                     {
-                        mat[direita.linha + 1, direita.coluna] = true;
+                        mat[direita.linha + 1, direita.coluna] = true; // marca a posicao da matriz como uma posicao possivel para o peao andar
                     }
-                } */
+                } 
             }
-
             return mat;
         }
     }
